@@ -66,7 +66,6 @@ import codewars_test as test
     function replaceWithDecorator(sel, cm) {
 
         let { anchor, head } = expand(cm, sel);
-
         let code = cm.getRange(anchor, head);
         let lines = code.split('\n');
         let indent = ' '.repeat(lines[1].length - lines[1].trimLeft().length);
@@ -87,8 +86,9 @@ import codewars_test as test
         cm.replaceRange(newCode, anchor, head);
     }
 
-    function wrapWithDescribe(cm) {
-        let code = cm.getSelection();
+    function wrapWithDescribe(sel, cm) {
+        let { anchor, head } = expand(cm, sel);
+        let code = cm.getRange(anchor, head);
         let lines = code.split('\n');
         let indent = ' '.repeat(lines[1].length - lines[1].trimLeft().length);
         let title = lines[0];
@@ -103,11 +103,12 @@ import codewars_test as test
             ...lines.slice(1).map(line => '    ' + line)
         ];
         let newCode = lines.join('\n');
-        cm.replaceSelection(newCode);
+        cm.replaceRange(newCode, anchor, head);
     }
 
-    function wrapWithIt(cm) {
-        let code = cm.getSelection();
+    function wrapWithIt(sel, cm) {
+        let { anchor, head } = expand(cm, sel);
+        let code = cm.getRange(anchor, head);
         let lines = code.split('\n');
         let indent = ' '.repeat(lines[1].length - lines[1].trimLeft().length);
         let title = lines[0];
@@ -122,7 +123,7 @@ import codewars_test as test
             ...lines.slice(1).map(line => '    ' + line)
         ];
         let newCode = lines.join('\n');
-        cm.replaceSelection(newCode);
+        cm.replaceRange(newCode, anchor, head);
     }
 
     function allSelections(op, cm) {
@@ -141,9 +142,9 @@ import codewars_test as test
         if(snipno == '1') {
             allSelections(replaceWithDecorator, cm);
         } else if(snipno == '2') {
-            wrapWithDescribe(cm);
+            allSelections(wrapWithDescribe, cm);
         } else if(snipno == '3') {
-            wrapWithIt(cm);
+            allSelections(wrapWithIt, cm);
         } else if(snipno == '4') {
             insertNeutralIt(cm);
         } else if(snipno == '5') {
@@ -177,6 +178,4 @@ import codewars_test as test
             }
         }
     });
-
-
 })();
